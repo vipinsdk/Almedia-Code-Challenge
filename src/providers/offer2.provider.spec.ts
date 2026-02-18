@@ -22,7 +22,7 @@ describe('Offer2Provider', () => {
     }
 };
 
-    const result = await provider.mapToOfferDB(mockPayload);
+    const result = await provider.mapToOfferDB(mockPayload.data);
     
     expect(result).toHaveLength(1);
     expect(result[0].isIos).toBe(0);
@@ -47,7 +47,7 @@ describe('Offer2Provider', () => {
         },
     }};
 
-    const result = await provider.mapToOfferDB(mockPayload);
+    const result = await provider.mapToOfferDB(mockPayload.data);
     expect(result).toHaveLength(0); 
   });
 });

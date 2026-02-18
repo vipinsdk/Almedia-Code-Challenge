@@ -21,6 +21,6 @@ describe('BaseProvider Fetch Logic', () => {
     const result = await provider.fetch();
 
     expect(axios.get).toHaveBeenCalledWith(mockUrl);
-    expect(result).toEqual(mockData);
+    expect(result).toEqual(mockData.response.offers);
   });
 });

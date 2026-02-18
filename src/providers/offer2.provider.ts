@@ -1,5 +1,6 @@
 import {Provider} from './base.provider';
 import {Offer} from '../database/entities/offer.entity';
+import axios from 'axios';
 
 
 export class Offer2Provider extends Provider {
@@ -10,18 +11,13 @@ export class Offer2Provider extends Provider {
         this.apiUrl = apiUrl;
     }
 
-    // async fetch(): Promise<any> {
-    //     // for now return the static payload defined in offer1.payload.ts
-    //     // in a actual implementation, this would be replaced by an API call to the provider's endpoint
-    //     if (payload.status) {
-    //         return payload.data;
-    //     }
-    //     return null;
-    // }
+     async fetch(): Promise<any> {
+            const result = await axios.get(this.getApiUrl());
+            return result.data.data;
+        }
 
     async mapToOfferDB(payload: any): Promise<Offer[]> {
         const offers: Offer[] = [];
-        payload  = payload.data;
 
         for (const key in payload) {
 
