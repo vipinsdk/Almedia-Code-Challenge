@@ -95,7 +95,7 @@ const payload = {
         "15830": {
             Offer: {
                 campaign_id: 15830,
-                name: "", // INVALID: Empty name
+                name: "", // INVALID
                 description: "Empty name test",
                 instructions: "N/A",
                 icon: "https://valid.url/icon.png",

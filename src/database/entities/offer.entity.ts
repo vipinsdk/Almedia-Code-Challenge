@@ -2,7 +2,6 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { IsInt, IsNotEmpty, IsString, IsUrl, MaxLength} from 'class-validator';
 import { IOffer } from '../../common/offer.interface';
 
-
 @Entity('offers')
 export class Offer implements IOffer {
   // primary column for offer id

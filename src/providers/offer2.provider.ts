@@ -1,7 +1,5 @@
 import {Provider} from './base.provider';
 import {Offer} from '../database/entities/offer.entity';
-import { payload } from './offer_payloads/offer2.payload';
-import { logger } from '../utils/logger';
 
 
 export class Offer2Provider extends Provider {

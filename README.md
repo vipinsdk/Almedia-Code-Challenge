@@ -75,5 +75,3 @@ docker compose up --build
 #Later, it can run without --build option
 docker compose up
 ```
-
-

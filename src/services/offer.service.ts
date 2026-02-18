@@ -1,6 +1,6 @@
 import { Provider } from "../providers/base.provider";
 import { Offer1Provider } from "../providers/offer1.provider";
-import { Offer2Provider } from "../providers/offer2.payload";
+import { Offer2Provider } from "../providers/offer2.provider";
 import { Offer } from "../database/entities/offer.entity";
 import { Config } from "../config/config";
 import { logger } from "../utils/logger";
@@ -18,12 +18,11 @@ export class OfferService {
         if (offers.length === 0) return;
 
         try {
-        await this.offerRepository.upsert(offers, {
-            conflictPaths: ['slug'], 
-            skipUpdateIfNoValuesChanged: true,
-        });
-        
-        logger.info(`Successfully upserted ${offers.length} offers.`);
+            await this.offerRepository.upsert(offers, {
+                conflictPaths: ['slug']
+            });
+
+            logger.info(`Successfully upserted ${offers.length} offers.`);
         } catch (error) {
             logger.error('Error during bulk offer upsert:', error);
             throw error;
@@ -43,6 +42,6 @@ export class OfferService {
             } catch (error) {
                 logger.error(`Error processing provider ${provider.providerName}:`, error);
             }
-        } 
+        }
     }
 }
