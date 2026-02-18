@@ -12,7 +12,7 @@ app.use((req, res, next) => {
 });
 
 app.get('/offers1', (req, res) => {
-    res.status(200).json(offer1Payload.response);
+    res.status(200).json(offer1Payload);
 });
 
 
