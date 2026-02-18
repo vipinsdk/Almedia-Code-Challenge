@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { IsInt, IsNotEmpty, IsString, MaxLength} from 'class-validator';
+import { IsInt, IsNotEmpty, IsString, IsUrl, MaxLength} from 'class-validator';
 import { IOffer } from '../../common/offer.interface';
 
 
@@ -39,6 +39,7 @@ export class Offer implements IOffer {
   @Column({ type: 'varchar', length: 255 })
   @IsNotEmpty()
   @IsString()
+  @IsUrl()
   @MaxLength(255)
   thumbnail: string;
 
@@ -61,6 +62,7 @@ export class Offer implements IOffer {
   @Column({ type: 'varchar', length: 256, name: 'offer_url_template' })
   @IsNotEmpty()
   @IsString()
+  @IsUrl()
   @MaxLength(256)
   offerUrlTemplate: string;
 
@@ -69,14 +71,12 @@ export class Offer implements IOffer {
   // so for offer1 payload, this should be "offer1"
   // for offer2 payload, this should be "offer2"
   @Column({ type: 'varchar', length: 255, nullable: true, name: 'provider_name' })
-  @IsNotEmpty()
   @IsString()
   @MaxLength(255)
   providerName: string;
 
   // offer id from external provider 
   @Column({ type: 'varchar', length: 255, name: 'external_offer_id', nullable: true })
-  @IsNotEmpty()
   @IsString() 
   @MaxLength(255)
   externalOfferId: string;
