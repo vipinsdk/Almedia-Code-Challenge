@@ -9,6 +9,8 @@ services:
       POSTGRES_DB: offers_db
     ports:
       - "5432:5432"
+    networks:
+      - default
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d offers_db"]
       interval: 5s
@@ -36,9 +38,15 @@ services:
     container_name: almedia-node-server
     ports:
       - "3000:3000"
+    networks:
+      - default
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://0.0.0.0:3000/health || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 5
+
+networks:
+  default:
+    driver: bridge
     
