@@ -4,28 +4,28 @@ Design and implement a job responsible for extracting offers from various extern
 # Directory Structure
 ```
 .
-├── node_server/                # Mock Provider Server
-│   ├── Dockerfile              # Lightweight Alpine-Node image
-│   ├── app.js                  # Express server logic & endpoints
-│   ├── offer1_payload.js       # Mock data for Provider 1 
-│   ├── offer2_payload.js       # Mock data for Provider 2 
-│   ├── package.json            # Mock server dependencies (Express)
+├── node_server/               
+│   ├── Dockerfile              
+│   ├── app.js                  
+│   ├── offer1_payload.js       
+│   ├── offer2_payload.js     
+│   ├── package.json            
 │   └── package-lock.json
 ├── src/                        
-|   ├── common/                 # Interface for the entity class
-│   ├── config/                 # Environment & App configuration
-│   ├── database/               # TypeORM Data Source & Entities
-│   ├── providers/              # BaseProvider and offer specific providers
-│   ├── services/               # Provider fetching & transformation
-│   ├── util/                   # Logger utility
-│   └── app.ts                  # Entry point
-├── .env                        # Local environment variables
-├── .dockerignore               # Prevents local node_modules in builds
-├── .gitignore                  # Files excluded from github
-├── docker-compose.yml          # Orchestrates DB and Mock Server
-├── Dockerfile                  # Dockerfile that build the application
-├── package.json                # application dependencies
-└── tsconfig.json               # TypeScript configuration
+|   ├── common/                
+│   ├── config/                
+│   ├── database/             
+│   ├── providers/             
+│   ├── services/               
+│   ├── util/                   
+│   └── app.ts                 
+├── .env                       
+├── .dockerignore              
+├── .gitignore                 
+├── docker-compose.yml        
+├── Dockerfile                  
+├── package.json                
+└── tsconfig.json         
 ```
 # Setting the environment for testing
 ### This code is based on the following tech stack: Typescript (Backend) --> PostgreSQL (Database)
@@ -46,7 +46,7 @@ docker build -t almedia-code-challenge-app .
 ```
 
 ## Mock Node.js server
-In the real world, the offers would be fetched from the actual APIs from different providers. In this code challenge I have created a mock server that will server the offer data (given and added offers with valid and invalid responses). This approach align with the actual implementation of the code that fetches the data from the actual APIs using a HTTP module like axios. 
+In the real world, the offers would be fetched from the actual APIs from different providers. In this code challenge I have created a mock server that will server the offer data (given and added offers with valid and invalid responses). This approach align with the actual implementation of the code that fetches the data from the actual APIs using a HTTP module like axios. <br />
 NOTE: The implementation for this server is kept bare minimum (to server the responses only)
 
 #### Building the node.js server
@@ -75,3 +75,50 @@ docker compose up --build
 #Later, it can run without --build option
 docker compose up
 ```
+
+## Application Run
+The application can be executed via the docker image or locally using typscript
+```
+# To run locally
+npx tsx --env-file=.env src/app.ts
+
+# Docker image
+docker run -it --rm \
+  --network almedia_code_challenge_default \
+  -e DB_HOST=db \
+  -e DB_PORT=5432 \
+  -e DB_USER=postgres \
+  -e DB_PASS=admin \
+  -e DB_NAME=offers_db \
+  -e OFFER1_URL=http://node-server:3000/offers1 \
+  -e OFFER2_URL=http://node-server:3000/offers2 \
+  almedia-code-challenge-app
+```
+
+## Design Decisions
+The code is based on service-oriented implementation but the actual logic for the handling the provider is based on the Factory Method pattern. 
+
+### 1. The Product Interface
+In a Factory pattern, we have a common interface for the objects the factory creates.
+In this code the `BaseProvider` abstract class (and the IOffer interface) acts as the blueprint. 
+Every Provider (Offer1Provider, Offer2Provider) should implement the `fetch()` and `mapToOfferDB()` methods. 
+
+### 2. The Individual Providers
+Every offer Provider (Offer1Provider, Offer2Provider) have their own data in different formats and these providers should implement the `fetch()` function to get the API data from the external source and `mapToOfferDB()` function handles provider specific mapping of the data to the Offer Entity class. The `validate()` function remain common for all the providers that validates the input data for type checking, missing fields or incorrect data and rejects the offer if the validation fails.
+
+### 3. Advantages
+This way we can decouple the core logic of saving the offers to the database `saveOffers()` in a service oriented code that calls the `fetch()`, `mapToOfferDB()` for all the providers listed in the array. 
+
+In the future, if a new provider (OfferProvider3) then it must implement the above functions based on the API response received from the their specific external source and the rest of the core logic remains the same. 
+
+This way, we can extend this code to any number of external providers (For ex: 20+) without changing the entire code and just plug the new provider to the OfferService. 
+
+## Test Coverage
+For this code, I have used the `vitest` testing package, it is similar to the jest (nodejs) package. I have added basic test cases that tests the code against different scenarios and we can still improve the code by adding more test cases and different edge case scenarios to make the code more robust and flexible. 
+
+The tests and code coverage report can be generated by running the following command 
+```
+npx vitest run --coverage
+```
+
+
