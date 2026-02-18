@@ -1,4 +1,4 @@
-FROM node:18-alpine AS builder
+FROM node:current-alpine AS builder
 
 WORKDIR /app
 
@@ -9,19 +9,21 @@ RUN npm install
 
 COPY src ./src
 
-RUN npm run build
+RUN npm run build && npm prune --production
 
-FROM node:18-alpine AS runner
+FROM alpine:latest AS runner
+
 ENV NODE_ENV=production
+
 WORKDIR /app
 
-RUN addgroup -S almedia && adduser -S almedia -G almedia
+RUN apk add --no-cache nodejs && \
+    addgroup -S almedia && adduser -S almedia -G almedia
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package*.json ./
-
-RUN npm cache clean --force && npm install --omit=dev
+COPY --from=builder /app/node_modules ./node_modules
 
 USER almedia
 
-ENTRYPOINT ["node", "dist/app.js"]
+ENTRYPOINT ["node" , "dist/app.js"]
